@@ -6,11 +6,16 @@
 	и двумя диодами на шину USB. На голом камне будет работать ещё лучше!
 */
 
-#define PERIOD 10   // период работы в секундах (пример: 60*60*24*3 = 259200 - три дня!)
-#define WORK 3         // время работы в секундах
+#define PERIOD 64800   // период работы в секундах (пример: 60*60*24*3 = 259200 - три дня!)
+#define WORK 60         // время работы в секундах
+
+//#define PERIOD 10
+//#define WORK 10
+
 #define MOS 1           // пин мосфета
 
 uint32_t mainTimer, myTimer;
+
 boolean state = false;
 
 #include <avr/wdt.h>
@@ -21,6 +26,7 @@ boolean state = false;
 // http://alexgyver.ru/arduino/DigiDrivers.rar
 
 void setup() {
+  mainTimer = PERIOD;
   // все пины как входы, экономия энергии
   for (byte i = 0; i < 6; i++) {
     pinMode(i, INPUT);
