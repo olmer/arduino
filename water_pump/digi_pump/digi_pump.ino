@@ -1,18 +1,12 @@
-/*
-	Данный код превратит вашу Digispark в спящий таймер. Через каждые PERIOD
-	секунд система подаёт 5 вольт на протяжении WORK секунд. Всё время,
-	кроме переключения пина, система спит и потребляет 28 микроампер
-	на плате Digispark с отрезанным светодиодом, стабилизатором
-	и двумя диодами на шину USB. На голом камне будет работать ещё лучше!
-*/
 
-#define PERIOD 64800   // период работы в секундах (пример: 60*60*24*3 = 259200 - три дня!)
-#define WORK 60         // время работы в секундах
+
+#define PERIOD 64800   // wait time in seconds
+#define WORK 60         // work time in seconds
 
 //#define PERIOD 10
 //#define WORK 10
 
-#define MOS 1           // пин мосфета
+#define MOS 1           // mosfet pin
 
 uint32_t mainTimer, myTimer;
 
@@ -23,48 +17,47 @@ boolean state = false;
 #include <avr/interrupt.h>
 #define adc_disable() (ADCSRA &= ~(1<<ADEN)) // disable ADC (before power-off)
 #define adc_enable()  (ADCSRA |=  (1<<ADEN)) // re-enable ADC
-// http://alexgyver.ru/arduino/DigiDrivers.rar
 
 void setup() {
   mainTimer = PERIOD;
-  // все пины как входы, экономия энергии
+
   for (byte i = 0; i < 6; i++) {
     pinMode(i, INPUT);
   }
-  adc_disable();          // отключить АЦП (экономия энергии)
+  adc_disable();         
 
-  wdt_reset();            // инициализация ватчдога
-  wdt_enable(WDTO_1S);    // разрешаем ватчдог
+  wdt_reset();            // watchdog init
+  wdt_enable(WDTO_1S);    
   // 15MS, 30MS, 60MS, 120MS, 250MS, 500MS, 1S, 2S, 4S, 8S
 
-  WDTCR |= _BV(WDIE);     // разрешаем прерывания по ватчдогу. Иначе будет резет.
-  sei();                  // разрешаем прерывания
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN); // максимальный сон
+  WDTCR |= _BV(WDIE);     // allowing interrupts
+  sei();                  // allowing interrupts
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
 }
 
 void loop() {
   mainTimer++;
 
-  if (!state) {                           // если помпа не включена
-    if ((long)mainTimer - myTimer > PERIOD) {   // таймер периода
-      myTimer = mainTimer;                // сброс таймера
-      state = true;                       // флаг на запуск
-      pinMode(MOS, OUTPUT);               // пин как выход
-      digitalWrite(MOS, HIGH);            // врубить
+  if (!state) {                           
+    if ((long)mainTimer - myTimer > PERIOD) {   
+      myTimer = mainTimer;                
+      state = true;                       
+      pinMode(MOS, OUTPUT);               
+      digitalWrite(MOS, HIGH);            
     }
-  } else {                                // если помпа включена
-    if ((long)mainTimer - myTimer > WORK) {     // таймер времени работы
-      myTimer = mainTimer;                // сброс
-      state = false;                      // флаг на выкл
-      digitalWrite(MOS, LOW);             // вырубить
-      pinMode(MOS, INPUT);                // пин как вход (экономия энергии)
+  } else {                                
+    if ((long)mainTimer - myTimer > WORK) {     
+      myTimer = mainTimer;                
+      state = false;                      
+      digitalWrite(MOS, LOW);            
+      pinMode(MOS, INPUT);                
     }
   }
 
-  sleep_enable();   // разрешаем сон
-  sleep_cpu();      // спать!
+  sleep_enable();   
+  sleep_cpu();      
 }
 
 ISR (WDT_vect) {
-  WDTCR |= _BV(WDIE); // разрешаем прерывания по ватчдогу. Иначе будет реcет.
+  WDTCR |= _BV(WDIE); 
 }
