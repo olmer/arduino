@@ -143,6 +143,10 @@ void initUCode() {
   ucode[FLAGS_Z1C1][JZ][2] = CO|MI;
   ucode[FLAGS_Z1C1][JZ][3] = RO|J;
   ucode[FLAGS_Z1C1][JZ][4] = RS;
+  
+  ucode[FLAGS_Z1C1][JEQ][5] = CO|MI;
+  ucode[FLAGS_Z1C1][JEQ][6] = RO|J;
+  ucode[FLAGS_Z1C1][JEQ][7] = RS;
 }
 
 /*
