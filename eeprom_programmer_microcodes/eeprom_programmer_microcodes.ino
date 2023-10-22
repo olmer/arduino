@@ -13,22 +13,22 @@
 /*
  * order of bits here is backwards to EEPROM pins. First half is left eeprom, second half is right
  */
-#define HLT 0b1000000000000000  // Halt clock                   // PIN 17 - IO7 - 1000_0000_0000_0000 - 80
-#define MI  0b0100000000000000  // Memory address register in   // PIN 16 - IO6 - 0100_0000_0000_0000 - 40
-#define RI  0b0010000000000000  // RAM data in                  // PIN 15 - IO5 - 0010_0000_0000_0000 - 20
-#define RO  0b0001000000000000  // RAM data out                 // PIN 14 - IO4 - 0001_0000_0000_0000 - 10
-#define NN  0b0000100000000000  // Not used                     // PIN 13 - IO3
-#define II  0b0000010000000000  // Instruction register in      // PIN 11 - IO2 - 0000_0100_0000_0000 - 04
-#define AI  0b0000001000000000  // A register in                // PIN 10 - IO1 - 0000_0010_0000_0000 - 02
-#define AO  0b0000000100000000  // A register out               // PIN 9  - IO0 - 0000_0001_0000_0000 - 01 - next goes after address 080
-#define EO  0b0000000010000000  // ALU out                      // PIN 17 - IO7 - 0000_0000_1000_0000 - 80
-#define SU  0b0000000001000000  // ALU subtract                 // PIN 16 - IO6 - 0000_0000_0100_0000 - 40
-#define BI  0b0000000000100000  // B register in                // PIN 15 - IO5 - 0000_0000_0010_0000 - 20
-#define OI  0b0000000000010000  // Output register in           // PIN 14 - IO4 - 0000_0000_0001_0000 - 10
-#define CE  0b0000000000001000  // Program counter enable       // PIN 13 - IO3 - 0000_0000_0000_1000 - 08
-#define CO  0b0000000000000100  // Program counter out          // PIN 11 - IO2 - 0000_0000_0000_0100 - 04
-#define J   0b0000000000000010  // Jump (program counter in)    // PIN 10 - IO1 - 0000_0000_0000_0010 - 02
-#define RS  0b0000000000000001  // Microcode counter reset      // PIN 9  - IO0 - 0000_0000_0000_0001 - 01
+#define HLTM 0b1000000000000000  // Halt clock                   // PIN 17 - IO7 - 1000_0000_0000_0000 - 80
+#define MI   0b0100000000000000  // Memory address register in   // PIN 16 - IO6 - 0100_0000_0000_0000 - 40
+#define RI   0b0010000000000000  // RAM data in                  // PIN 15 - IO5 - 0010_0000_0000_0000 - 20
+#define RO   0b0001000000000000  // RAM data out                 // PIN 14 - IO4 - 0001_0000_0000_0000 - 10
+#define NN   0b0000100000000000  // Not used                     // PIN 13 - IO3
+#define II   0b0000010000000000  // Instruction register in      // PIN 11 - IO2 - 0000_0100_0000_0000 - 04
+#define AI   0b0000001000000000  // A register in                // PIN 10 - IO1 - 0000_0010_0000_0000 - 02
+#define AO   0b0000000100000000  // A register out               // PIN 9  - IO0 - 0000_0001_0000_0000 - 01 - next goes after address 080
+#define EO   0b0000000010000000  // ALU out                      // PIN 17 - IO7 - 0000_0000_1000_0000 - 80
+#define SU   0b0000000001000000  // ALU subtract                 // PIN 16 - IO6 - 0000_0000_0100_0000 - 40
+#define BI   0b0000000000100000  // B register in                // PIN 15 - IO5 - 0000_0000_0010_0000 - 20
+#define OI   0b0000000000010000  // Output register in           // PIN 14 - IO4 - 0000_0000_0001_0000 - 10
+#define CE   0b0000000000001000  // Program counter enable       // PIN 13 - IO3 - 0000_0000_0000_1000 - 08
+#define CO   0b0000000000000100  // Program counter out          // PIN 11 - IO2 - 0000_0000_0000_0100 - 04
+#define J    0b0000000000000010  // Jump (program counter in)    // PIN 10 - IO1 - 0000_0000_0000_0010 - 02
+#define RS   0b0000000000000001  // Microcode counter reset      // PIN 9  - IO0 - 0000_0000_0000_0001 - 01
 
 /*
  * NOP                                          LDA
@@ -97,13 +97,13 @@ const PROGMEM uint16_t UCODE_TEMPLATE[16][8] = {
   { CO|MI,  RO|II|CE,  CO|MI,  RO|J,     RS,       0,        0,     0 },   // 0110 - JMP
   { CO|MI,  RO|II|CE,  CE,     RS,       0,        0,        0,     0 },   // 0111 - JC
   { CO|MI,  RO|II|CE,  CE,     RS,       0,        0,        0,     0 },   // 1000 - JZ
-  { CO|MI,  RO|II|CE,  CO|MI,  RO|BI|CE, EO|SU|CE, RS,       0,     0 },   // 1001 - JEQ
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE, RO|BI,    EO|SU,    CE,    0 },   // 1001 - JEQ
   { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1010
   { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1011
   { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1100
   { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1101
   { CO|MI,  RO|II|CE,  AO|OI,  RS,       0,        0,        0,     0 },   // 1110 - OUT
-  { CO|MI,  RO|II|CE,  HLT,    0,        0,        0,        0,     0 },   // 1111 - HLT
+  { CO|MI,  RO|II|CE,  HLTM,   0,        0,        0,        0,     0 },   // 1111 - HLT
 };
 
 uint16_t ucode[4][16][8];
@@ -130,9 +130,8 @@ void initUCode() {
   ucode[FLAGS_Z1C0][JZ][3] = RO|J;
   ucode[FLAGS_Z1C0][JZ][4] = RS;
   
-  ucode[FLAGS_Z1C0][JEQ][5] = CO|MI;
-  ucode[FLAGS_Z1C0][JEQ][6] = RO|J;
-  ucode[FLAGS_Z1C0][JEQ][7] = RS;
+  ucode[FLAGS_Z1C0][JEQ][6] = CO|MI;
+  ucode[FLAGS_Z1C0][JEQ][7] = RO|J|CE;
 
   // ZF = 1, CF = 1
   memcpy_P(ucode[FLAGS_Z1C1], UCODE_TEMPLATE, sizeof(UCODE_TEMPLATE));
@@ -144,9 +143,8 @@ void initUCode() {
   ucode[FLAGS_Z1C1][JZ][3] = RO|J;
   ucode[FLAGS_Z1C1][JZ][4] = RS;
   
-  ucode[FLAGS_Z1C1][JEQ][5] = CO|MI;
-  ucode[FLAGS_Z1C1][JEQ][6] = RO|J;
-  ucode[FLAGS_Z1C1][JEQ][7] = RS;
+  ucode[FLAGS_Z1C0][JEQ][6] = CO|MI;
+  ucode[FLAGS_Z1C0][JEQ][7] = RO|J|CE;
 }
 
 /*
