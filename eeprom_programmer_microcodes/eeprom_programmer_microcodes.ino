@@ -98,7 +98,7 @@ const PROGMEM uint16_t UCODE_TEMPLATE[16][8] = {
   { CO|MI,  RO|II|CE,  CE,     RS,       0,        0,        0,     0 },   // 0111 - JC
   { CO|MI,  RO|II|CE,  CE,     RS,       0,        0,        0,     0 },   // 1000 - JZ
   { CO|MI,  RO|II|CE,  CO|MI,  RO|MI|CE, RO|BI,    EO|SU,    CE,    0 },   // 1001 - JEQ
-  { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1010
+  { CO|MI,  RO|II|CE,  CO|MI,  RO|BI|CE, EO|AI,    RS,       0,     0 },   // 1010 - ADI
   { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1011
   { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1100
   { CO|MI,  RO|II|CE,  0,      0,        0,        0,        0,     0 },   // 1101
